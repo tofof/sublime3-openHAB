@@ -1,0 +1,125 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/3/syntax.html
+name: openHAB rules
+file_extensions:
+  - rules
+  - script
+scope: source.openHAB
+
+contexts:
+  # The prototype context is prepended to all contexts but those setting
+  # meta_include_prototype: false.
+  prototype:
+    - include: comments
+
+  main:
+    # The main context is the initial starting point of our syntax.
+    # Include other contexts from here (or specify them directly).
+    - include: types 
+    - include: keywords
+    - include: constants
+    - include: numbers
+    - include: strings
+
+  types:
+    # Note that blackslashes don't need to be escaped within single quoted
+    # strings in YAML. When using single quoted strings, only single quotes
+    # need to be escaped: this is done by using two single quotes next to each
+    # other.
+    - match: '\b(Channel|Item|Time|System|Thing)\b'
+      scope: support.type.openHAB
+    - match: '\b(|Timer|Float|DecimalType|PointType)\b'
+      scope: storage.type.openHAB
+    - match: '\b(Color|Contact|DateTime|Dimmer|Group|Image|Location|Number|Player|Rollershutter|String|Switch)\b'
+      scope: entity.name.type.openHAB
+    - match: '\b(?:void|boolean|byte|char|short|int|float|long|double)\b'
+      scope: storage.type.primitive.openHAB
+ 
+  keywords:
+    # Note that blackslashes don't need to be escaped within single quoted
+    # strings in YAML. When using single quoted strings, only single quotes
+    # need to be escaped: this is done by using two single quotes next to each
+    # other.
+
+    - match: '\b(new)\b'
+      scope: variable.language.openHAB
+    - match: '\b(import)\b'
+      scope: keyword.control.import.openHAB
+    - match: '\b(try|catch|finally|throw)\b'
+      scope: keyword.control.catch-exception.openHAB
+    - match: '\b(return|break|case|continue|default|do|while|for|switch|if|else)\b'
+      scope: keyword.control.openHAB
+    - match: '(==|===|!==|!=|<=|>=|<>|<|>)'
+      scope: keyword.operator.comparison.openHAB
+    - match: '(=)'
+      scope: keyword.operator.assignment.openHAB
+    - match: '(\-\-|\+\+)'
+      scope: keyword.operator.increment-decrement.openHAB
+    - match: '(\-|\+|\*|\/|%)'
+      scope: keyword.operator.arithmetic.openHAB
+    - match: '(!|&&|\|\|)'
+      scope: keyword.operator.logical.openHAB
+    - match: '\b(rule)\b'
+      scope: entity.name.function.openHAB
+    - match: '\b(val|var)\b'
+      scope: storage.modifier.openHAB
+
+    - match: '\b(as)\b'
+      scope: storage.modifier.openHAB
+    - match: '\b(when|then|end|or|cron|is|from|to)\b'
+      scope: keyword.operator.word.openHAB
+    - match: '\b(received|command|update|changed|triggered)\b'
+      scope: keyword.operator.word.openHAB
+    - match: '\b(state)\b'
+      scope: keyword.operator.dereference.openHAB
+    - match: '\b(say|postUpdate|sendCommand|createTimer|println|transform|logDebug|logInfo|logWarn|logError)\b'
+      scope: support.function.openHAB
+
+  constants:
+    # Note that blackslashes don't need to be escaped within single quoted
+    # strings in YAML. When using single quoted strings, only single quotes
+    # need to be escaped: this is done by using two single quotes next to each
+    # other.
+    - match: '\b(true|false|null|NULL|ON|OFF|INCREASE|DECREASE|OPEN|CLOSED|PLAY|PAUSE|REWIND|FASTFORWARD|NEXT|PREVIOUS)\b'
+      scope: constant.language.openHAB
+    - match: '\b(started|shuts down|noon|midnight)\b'
+      scope: constant.language.openHAB
+
+  numbers:
+    - match: '\b(-)?[0-9.]+\b'
+      scope: constant.numeric.openHAB
+
+  strings:
+    # Strings begin and end with quotes, and use backslashes as an escape
+    # character.
+    - match: '"'
+      scope: punctuation.definition.string.begin.openHAB
+      push: inside_string
+
+  inside_string:
+    - meta_include_prototype: false
+    - meta_scope: string.quoted.double.openHAB
+    - match: '\.'
+      scope: constant.character.escape.openHAB
+    - match: '"'
+      scope: punctuation.definition.string.end.openHAB
+      pop: true
+
+  comments:
+    # Comments begin with a '//' and finish at the end of the line.
+    - match: '//'
+      scope: punctuation.definition.comment.openHAB
+      push:
+        # This is an anonymous context push for brevity.
+        - meta_scope: comment.line.double-slash.openHAB
+        - match: $\n?
+          pop: true
+    - match: '/\*'
+      scope: punctuation.definition.comment.openHAB
+      push:
+        # This is an anonymous context push for brevity.
+        - meta_scope: comment.block.openHAB
+        - match: '\*/'
+          scope: punctuation.definition.comment.openHAB
+          pop: true
