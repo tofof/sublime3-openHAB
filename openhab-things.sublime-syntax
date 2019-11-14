@@ -26,7 +26,7 @@ contexts:
     # strings in YAML. When using single quoted strings, only single quotes
     # need to be escaped: this is done by using two single quotes next to each
     # other.
-    - match: '\b(Thing)\b'
+    - match: '\b(Thing|Bridge)\b'
       scope: entity.name.type.openHAB
 
   keywords:
